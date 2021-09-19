@@ -47,9 +47,10 @@ public class GameScreen implements Screen {
 
         this.enemies = new Enemy[50];
         for (int i = 0; i < 50; i++) {
-            enemies[i] = new Enemy(this, 160, getMapHeight()/2, AnimationType.SLIME_IDLE, AnimationType.SLIME_RUN, AnimationType.SLIME_ATTACK);
+            enemies[i] = new Enemy(this, 160, getMapHeight()/2);
             enemies[i].setTarget(knight);
             enemies[i].setAlive(false);
+            enemies[i].setEnemyType(MathUtils.random(0, 1) == 0 ? Enemy.EnemyType.SLIME : Enemy.EnemyType.GOBLIN);
         }
 
         this.props = new Prop[20];
@@ -131,6 +132,7 @@ public class GameScreen implements Screen {
                     enemies[i].getPos().set(160, getMapHeight()/2);
                     enemies[i].setHealth(30);
                     enemies[i].setAlive(true);
+                    enemies[i].setEnemyType(MathUtils.random(0, 1) == 0 ? Enemy.EnemyType.SLIME : Enemy.EnemyType.GOBLIN);
                     enemySpawnStateTime = 0;
                     break;
                 }
@@ -220,6 +222,10 @@ public class GameScreen implements Screen {
 
     public Prop[] getProps() {
         return props;
+    }
+
+    public int getLevel() {
+        return level;
     }
 
     private static String formatSeconds(float timeInSeconds) {

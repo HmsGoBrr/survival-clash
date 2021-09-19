@@ -10,7 +10,7 @@ import fish.hms.survivalclash.screen.GameScreen;
 public class Enemy extends BaseCharacter {
     public enum EnemyType {
         SLIME(AnimationType.SLIME_IDLE, AnimationType.SLIME_RUN, AnimationType.SLIME_ATTACK, 100, 7, 0.4f),
-        GOBLIN(AnimationType.SLIME_IDLE, AnimationType.SLIME_RUN, AnimationType.SLIME_ATTACK, 120, 4, 0.6f);
+        GOBLIN(AnimationType.GOBLIN_IDLE, AnimationType.GOBLIN_RUN, AnimationType.GOBLIN_ATTACK, 120, 4, 0.6f);
 
         private final AnimationType idle, run, attack;
         private final float speed;
@@ -47,27 +47,22 @@ public class Enemy extends BaseCharacter {
     }
 
     private final GameScreen gameScreen;
-    private final AnimationType IDLE, RUN, ATTACK;
+    private EnemyType enemyType;
     private Character target;
-    private final float damage;
+    private float damage;
     private float damageStateTime;
-    private final float damageCoolDown;
+    private float damageCoolDown;
     private final float damageRadius;
     private final Animation<TextureRegion> deathVFX;
     private float vfxStateTime;
 
-    public Enemy(GameScreen gameScreen, float x, float y, AnimationType IDLE, AnimationType RUN, AnimationType ATTACK) {
+    public Enemy(GameScreen gameScreen, float x, float y) {
         super(gameScreen);
         this.gameScreen = gameScreen;
         this.pos.x = x;
         this.pos.y = y;
-        this.IDLE = IDLE;
-        this.RUN = RUN;
-        this.ATTACK = ATTACK;
-        this.animationType = IDLE;
         this.width = (float) (animationType.getTexture().getWidth() / animationType.getFrameCols());
         this.height = (float) animationType.getTexture().getHeight();
-        this.speed = 120;
         this.damage = 5;
         this.damageStateTime = 0;
         this.damageCoolDown = 0.5f;
@@ -94,6 +89,10 @@ public class Enemy extends BaseCharacter {
             return;
         }
 
+        this.speed = this.enemyType.speed * gameScreen.getLevel();
+        this.damage = this.enemyType.damage * gameScreen.getLevel();
+        this.damageCoolDown = this.enemyType.getDamageCoolDown() * gameScreen.getLevel();
+
         velocity.x = (target.getPos().x - getPos().x) > 0 ? 1 : -1;
         velocity.y = (target.getPos().y - getPos().y) > 0 ? 1 : -1;
         if (pos.dst(target.pos) < damageRadius) {
@@ -102,17 +101,17 @@ public class Enemy extends BaseCharacter {
         }
 
         if (Math.sqrt((velocity.x * velocity.x) + (velocity.y * velocity.y)) != 0 && !target.isKnockingPlayerBack()) {
-            animationType = RUN;
+            animationType = enemyType.run;
             isFacingLeft = velocity.x < 0.0f;
         } else if (target.getCollisionRec().overlaps(getCollisionRec()) && pos.dst(target.pos) < damageRadius) {
-            animationType = ATTACK;
+            animationType = enemyType.attack;
             damageStateTime += dt;
             if (damageStateTime >= damageCoolDown) {
                 target.takeDamage(this, damage);
                 damageStateTime = 0;
             }
         } else {
-            animationType = IDLE;
+            animationType = enemyType.idle;
         }
 
         if (target.isKnockingPlayerBack()) {
@@ -135,5 +134,9 @@ public class Enemy extends BaseCharacter {
 
     public void setTarget(Character target) {
         this.target = target;
+    }
+
+    public void setEnemyType(EnemyType enemyType) {
+        this.enemyType = enemyType;
     }
 }

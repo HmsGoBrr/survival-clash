@@ -13,6 +13,10 @@ public enum AnimationType {
     SLIME_RUN(new Texture("assets/characters/slime_run_spritesheet.png"), 6, 1, 1/12.0f),
     SLIME_ATTACK(new Texture("assets/characters/slime_attack_spritesheet.png"), 6, 1, 1/12.0f),
 
+    GOBLIN_IDLE(new Texture("assets/characters/goblin_idle_spritesheet.png"), 6, 1, 1/12.0f),
+    GOBLIN_RUN(new Texture("assets/characters/goblin_run_spritesheet.png"), 6, 1, 1/12.0f),
+    GOBLIN_ATTACK(new Texture("assets/characters/goblin_attack_spritesheet.png"), 6, 1, 1/12.0f),
+
     SMOKE_VFX(new Texture("assets/vfx/smoke.png"), 5, 1, 1/10.0f);
 
     private final Texture texture;
