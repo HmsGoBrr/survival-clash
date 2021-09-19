@@ -91,7 +91,7 @@ public class Enemy extends BaseCharacter {
 
         this.speed = this.enemyType.speed * gameScreen.getLevel();
         this.damage = this.enemyType.damage * gameScreen.getLevel();
-        this.damageCoolDown = this.enemyType.getDamageCoolDown() * gameScreen.getLevel();
+        this.damageCoolDown = this.enemyType.getDamageCoolDown();
 
         velocity.x = (target.getPos().x - getPos().x) > 0 ? 1 : -1;
         velocity.y = (target.getPos().y - getPos().y) > 0 ? 1 : -1;
